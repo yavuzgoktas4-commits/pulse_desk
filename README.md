@@ -1,9 +1,11 @@
 [![PulseDesk CI](https://github.com/yavuzgoktas4-commits/pulse_desk/actions/workflows/ci.yml/badge.svg)](https://github.com/yavuzgoktas4-commits/pulse_desk/actions/workflows/ci.yml)
-[![Canlı Demo - Render](https://img.shields.io/badge/Canl%C4%B1_Uygulama_(Render)-PulseDesk_Live-46E3B7?style=flat&logo=render&logoColor=white)](https://pulse-desk.onrender.com)
+[![Canlı Uygulama / Live Demo](https://img.shields.io/badge/Canl%C4%B1_Uygulama_%2F_Live_Demo-Render-46E3B7?style=flat&logo=render&logoColor=white)](https://pulse-desk-6e5q.onrender.com)
+
+**Canlı Uygulama / Live Demo:** [https://pulse-desk-6e5q.onrender.com](https://pulse-desk-6e5q.onrender.com)
 
 # PulseDesk — Akıllı SLA ve Bilet Yönetim Sistemi
 
-> **Canlı Render URL:** [https://pulse-desk.onrender.com](https://pulse-desk.onrender.com)  
+> **Canlı Render URL:** [https://pulse-desk-6e5q.onrender.com](https://pulse-desk-6e5q.onrender.com)  
 > **GitHub Actions CI Durumu:** [![PulseDesk CI](https://github.com/yavuzgoktas4-commits/pulse_desk/actions/workflows/ci.yml/badge.svg)](https://github.com/yavuzgoktas4-commits/pulse_desk/actions/workflows/ci.yml)
 
 **PulseDesk**, kurumsal müşteri destek ekiplerinin en büyük operasyonel darboğazı olan **"acil biletlerin manuel triyaj beklerken SLA süresini aşması"** problemini otomatik anahtar kelime analizi ve dinamik SLA atamasıyla çözen, **Rails 8**, **PostgreSQL** ve **Tailwind CSS** ile geliştirilmiş modern bir bilet yönetim sistemidir.
