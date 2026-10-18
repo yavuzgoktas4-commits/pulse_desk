@@ -41,6 +41,10 @@ Otonom geliştirme sırasında ajan aşağıdaki teknik engellerle karşılaşm�
 - **Sorun:** İlk `bin/rails test` çalıştırmasında test veritabanı şeması henüz yüklenmediği için `Migrations are pending` hatası alındı. Ayrıca Windows ortamında oluşturulan `bin/render-build.sh` dosyasında CRLF (`\r\n`) satır sonları oluştuğu için Linux tabanlı Render konteynerinde çalışmama riski ortaya çıktı.
 - **Nasıl Aşıldı:** Test öncesi `bin/rails db:test:prepare` adımı hem yerel akışa hem de GitHub Actions CI boru hattına eklendi. `.gitattributes` dosyasına `bin/* text eol=lf` ve `*.sh text eol=lf` kuralları eklenip `git add --chmod=+x bin/render-build.sh` ile Linux çalıştırma izni garanti altına alındı.
 
+### Hata 5: GitHub Actions Ubuntu Runner'da `ruby.exe` Binstub Hatası (Exit Code 127)
+- **Sorun:** Proje Windows ortamında oluşturulduğu için `bin/` dizinindeki binstub dosyalarının shebang satırı `#!/usr/bin/env ruby.exe` olarak üretilmişti. Ubuntu tabanlı GitHub Actions ortamında `bin/rails db:test:prepare` çalıştırıldığında `/usr/bin/env: 'ruby.exe': No such file or directory (exit code 127)` hatasıyla CI patladı.
+- **Nasıl Aşıldı:** `.github/workflows/ci.yml` ve `bin/render-build.sh` içindeki komutlar `bundle exec rails db:test:prepare` ve `bundle exec rails test` olarak güncellendi; ayrıca `bin/*` altındaki tüm binstub shebang satırları platform bağımsız `#!/usr/bin/env ruby` olarak düzeltildi.
+
 ---
 
 ## 3. Token ve Zaman Maliyeti Dökümü
