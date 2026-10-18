@@ -1,0 +1,118 @@
+<% content_for :title, "PulseDesk — Bilet ##{@ticket.id}: #{@ticket.title}" %>
+<% breached = @ticket.sla_breached? %>
+
+<div class="space-y-6">
+  <!-- Üst Navigasyon -->
+  <div class="flex items-center justify-between">
+    <%= link_to "← Bilet Listesine Dön", tickets_path, class: "inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-indigo-600 transition" %>
+    <span class="text-xs font-medium text-slate-400">Bilet ID: #<%= @ticket.id %></span>
+  </div>
+
+  <!-- SLA İhlali Uyarı Bandı -->
+  <% if breached %>
+    <div class="flex flex-col gap-2 rounded-2xl border-2 border-red-600 bg-red-50 p-5 text-red-900 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center rounded-lg bg-red-600 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-white">
+          SLA İHLALİ / BREACHED
+        </span>
+        <div>
+          <p class="text-sm font-bold text-red-900">Bu biletin hedef çözüm süresi aşıldı!</p>
+          <p class="text-xs text-red-700">
+            SLA Hedefi: <%= @ticket.sla_deadline&.strftime("%d.%m.%Y %H:%M") %> (<%= remaining_sla_text(@ticket) %>)
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Ana Bilet Kartı -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
+    <div class="border-b border-slate-200 bg-slate-50/70 px-6 py-5">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold <%= status_badge_classes(@ticket.status) %>">
+              <%= status_label(@ticket.status) %>
+            </span>
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs <%= priority_badge_classes(@ticket.priority) %>">
+              Öncelik: <%= priority_label(@ticket.priority) %>
+            </span>
+            <% if breached %>
+              <span class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1 text-xs font-bold uppercase text-white">
+                SLA İHLALİ / BREACHED
+              </span>
+            <% end %>
+          </div>
+
+          <h1 class="text-xl font-bold text-slate-900 sm:text-2xl"><%= @ticket.title %></h1>
+          <p class="text-sm text-slate-600">
+            Müşteri E-posta: <span class="font-medium text-slate-900"><%= @ticket.customer_email %></span>
+            &middot; Oluşturulma: <%= @ticket.created_at.strftime("%d.%m.%Y %H:%M") %>
+          </p>
+        </div>
+
+        <!-- Durum Geçiş Aksiyon Butonları -->
+        <div class="flex flex-wrap items-center gap-3">
+          <% if @ticket.status != "open" %>
+            <%= button_to "İncelemeye Al (Open)",
+                  mark_as_open_ticket_path(@ticket),
+                  method: :patch,
+                  class: "inline-flex cursor-pointer items-center justify-center rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-amber-600 transition" %>
+          <% end %>
+
+          <% if @ticket.status != "solved" %>
+            <%= button_to "Çözüldü Olarak İşaretle (Solved)",
+                  mark_as_solved_ticket_path(@ticket),
+                  method: :patch,
+                  class: "inline-flex cursor-pointer items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-emerald-700 transition" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Açıklama ve SLA Detayları -->
+    <div class="grid grid-cols-1 divide-y divide-slate-200 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+      <div class="p-6 lg:col-span-2">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Bilet Açıklaması</h2>
+        <div class="mt-3 whitespace-pre-line rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-800 border border-slate-100">
+          <%= @ticket.description %>
+        </div>
+      </div>
+
+      <div class="space-y-4 bg-slate-50/40 p-6">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">SLA & Süreç Bilgileri</h2>
+
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between border-b border-slate-200/70 pb-2">
+            <dt class="text-slate-500">Mevcut Durum</dt>
+            <dd class="font-semibold text-slate-900"><%= status_label(@ticket.status) %></dd>
+          </div>
+
+          <div class="flex justify-between border-b border-slate-200/70 pb-2">
+            <dt class="text-slate-500">Öncelik Seviyesi</dt>
+            <dd class="font-semibold text-slate-900"><%= priority_label(@ticket.priority) %></dd>
+          </div>
+
+          <div class="flex justify-between border-b border-slate-200/70 pb-2">
+            <dt class="text-slate-500">SLA Hedef Zamanı</dt>
+            <dd class="font-medium text-slate-900"><%= @ticket.sla_deadline&.strftime("%d.%m.%Y %H:%M") || "-" %></dd>
+          </div>
+
+          <div class="flex justify-between border-b border-slate-200/70 pb-2">
+            <dt class="text-slate-500">Kalan SLA Süresi</dt>
+            <dd class="font-semibold <%= breached ? 'text-red-600' : 'text-slate-900' %>">
+              <%= remaining_sla_text(@ticket) %>
+            </dd>
+          </div>
+
+          <div class="flex justify-between pb-1">
+            <dt class="text-slate-500">Çözülme Zamanı</dt>
+            <dd class="font-medium text-slate-900">
+              <%= @ticket.resolved_at ? @ticket.resolved_at.strftime("%d.%m.%Y %H:%M") : "Henüz çözülmedi" %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

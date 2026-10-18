@@ -1,0 +1,145 @@
+<% content_for :title, "PulseDesk — Bilet Listesi" %>
+
+<% all_tickets = Ticket.all %>
+<% breached_count = all_tickets.count(&:sla_breached?) %>
+<% urgent_count = all_tickets.where(priority: "urgent").where.not(status: "solved").count %>
+<% open_count = all_tickets.where(status: %w[new open]).count %>
+<% solved_count = all_tickets.where(status: "solved").count %>
+
+<div class="space-y-6">
+  <!-- Başlık ve Aksiyon Alanı -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900">Destek Biletleri</h1>
+      <p class="mt-1 text-sm text-slate-600">
+        PulseDesk akıllı SLA ve öncelik motoru ile gelen müşteri taleplerini gerçek zamanlı yönetin.
+      </p>
+    </div>
+    <div>
+      <%= link_to new_ticket_path, class: "inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition" do %>
+        <span>+ Yeni Bilet Oluştur</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Özet Metrik Kartları -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+      <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Aktif Biletler</p>
+      <p class="mt-2 text-2xl font-bold text-slate-900"><%= open_count %></p>
+    </div>
+
+    <div class="rounded-xl border border-rose-200 bg-rose-50/50 p-4 shadow-xs">
+      <p class="text-xs font-semibold uppercase tracking-wider text-rose-700">SLA İhlali (Breached)</p>
+      <p class="mt-2 text-2xl font-bold text-rose-700"><%= breached_count %></p>
+    </div>
+
+    <div class="rounded-xl border border-amber-200 bg-amber-50/40 p-4 shadow-xs">
+      <p class="text-xs font-semibold uppercase tracking-wider text-amber-800">Bekleyen Acil (Urgent)</p>
+      <p class="mt-2 text-2xl font-bold text-amber-800"><%= urgent_count %></p>
+    </div>
+
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-4 shadow-xs">
+      <p class="text-xs font-semibold uppercase tracking-wider text-emerald-700">Çözülen Biletler</p>
+      <p class="mt-2 text-2xl font-bold text-emerald-700"><%= solved_count %></p>
+    </div>
+  </div>
+
+  <!-- Filtre Sekmeleri -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+    <div class="flex flex-wrap items-center gap-2">
+      <%= link_to "Tümü", tickets_path, class: "rounded-lg px-3 py-1.5 text-xs font-semibold transition #{params[:status].blank? && params[:priority].blank? ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'}" %>
+      <%= link_to "Yeni (New)", tickets_path(status: "new"), class: "rounded-lg px-3 py-1.5 text-xs font-semibold transition #{params[:status] == 'new' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'}" %>
+      <%= link_to "İncelemede (Open)", tickets_path(status: "open"), class: "rounded-lg px-3 py-1.5 text-xs font-semibold transition #{params[:status] == 'open' ? 'bg-amber-600 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'}" %>
+      <%= link_to "Çözüldü (Solved)", tickets_path(status: "solved"), class: "rounded-lg px-3 py-1.5 text-xs font-semibold transition #{params[:status] == 'solved' ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'}" %>
+      <%= link_to "Sadece Acil (Urgent)", tickets_path(priority: "urgent"), class: "rounded-lg px-3 py-1.5 text-xs font-semibold transition #{params[:priority] == 'urgent' ? 'bg-rose-600 text-white' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}" %>
+    </div>
+  </div>
+
+  <!-- Bilet Tablosu -->
+  <% if @tickets.any? %>
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+          <thead class="bg-slate-50">
+            <tr>
+              <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Bilet & Müşteri</th>
+              <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Durum</th>
+              <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Öncelik</th>
+              <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Kalan SLA Süresi</th>
+              <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">İşlem</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <% @tickets.each do |ticket| %>
+              <% breached = ticket.sla_breached? %>
+              <tr class="<%= breached ? 'bg-red-50/80 hover:bg-red-100/70' : 'hover:bg-slate-50' %> transition">
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <%= link_to ticket.title, ticket_path(ticket), class: "text-sm font-semibold text-slate-900 hover:text-indigo-600 transition" %>
+                      <% if breached %>
+                        <span class="inline-flex items-center gap-1 rounded-md bg-red-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white shadow-xs animate-pulse">
+                          SLA İHLALİ / BREACHED
+                        </span>
+                      <% end %>
+                    </div>
+                    <span class="mt-1 text-xs text-slate-500">
+                      <%= ticket.customer_email %> &middot; #<%= ticket.id %> &middot; <%= ticket.created_at.strftime("%d.%m.%Y %H:%M") %>
+                    </span>
+                  </div>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium <%= status_badge_classes(ticket.status) %>">
+                    <%= status_label(ticket.status) %>
+                  </span>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs <%= priority_badge_classes(ticket.priority) %>">
+                    <%= priority_label(ticket.priority) %>
+                  </span>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-4 text-sm">
+                  <% if breached %>
+                    <div class="flex flex-col">
+                      <span class="inline-flex w-fit items-center gap-1.5 rounded-md bg-red-100 px-2.5 py-1 text-xs font-bold text-red-800 ring-1 ring-inset ring-red-600/30">
+                        SLA İHLALİ / BREACHED (<%= remaining_sla_text(ticket) %>)
+                      </span>
+                      <span class="mt-1 text-xs text-red-700">
+                        Hedef: <%= ticket.sla_deadline&.strftime("%d.%m.%Y %H:%M") %>
+                      </span>
+                    </div>
+                  <% elsif ticket.status == "solved" %>
+                    <span class="text-xs font-medium text-emerald-700">
+                      <%= remaining_sla_text(ticket) %>
+                    </span>
+                  <% else %>
+                    <div class="flex flex-col">
+                      <span class="font-medium text-slate-800"><%= remaining_sla_text(ticket) %></span>
+                      <span class="text-xs text-slate-500">Hedef: <%= ticket.sla_deadline&.strftime("%H:%M") %></span>
+                    </div>
+                  <% end %>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                  <%= link_to "Detay →", ticket_path(ticket), class: "inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-indigo-600 transition" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+      <h3 class="text-base font-semibold text-slate-900">Henüz kayıtlı bilet bulunmuyor</h3>
+      <p class="mt-1 text-sm text-slate-500">Yeni bir müşteri destek bileti oluşturarak SLA takibini başlatabilirsiniz.</p>
+      <div class="mt-5">
+        <%= link_to "+ İlk Bileti Oluştur", new_ticket_path, class: "inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition" %>
+      </div>
+    </div>
+  <% end %>
+</div>

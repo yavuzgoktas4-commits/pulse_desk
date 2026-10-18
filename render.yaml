@@ -1,0 +1,22 @@
+databases:
+  - name: pulse-desk-db
+    databaseName: pulse_desk_production
+    user: pulse_desk
+    plan: free
+
+services:
+  - type: web
+    name: pulse-desk
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pulse-desk-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2
