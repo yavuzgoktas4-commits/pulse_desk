@@ -2,6 +2,11 @@ class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show mark_as_open mark_as_solved]
 
   def index
+    if params[:seed] == "force"
+      Rails.application.load_seed
+      return redirect_to root_path, notice: "Örnek B2B SaaS destek biletleri başarıyla yüklendi."
+    end
+
     Rails.application.load_seed if !Rails.env.test? && Ticket.count.zero?
 
     @tickets = Ticket.order(created_at: :desc)
