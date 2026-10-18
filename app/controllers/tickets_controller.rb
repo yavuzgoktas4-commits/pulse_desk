@@ -12,6 +12,10 @@ class TicketsController < ApplicationController
     @tickets = Ticket.order(created_at: :desc)
     @tickets = @tickets.where(status: params[:status]) if params[:status].present? && Ticket::STATUSES.include?(params[:status])
     @tickets = @tickets.where(priority: params[:priority]) if params[:priority].present? && Ticket::PRIORITIES.include?(params[:priority])
+    if params[:q].present?
+      q = "%#{params[:q].strip}%"
+      @tickets = @tickets.where("title ILIKE :q OR description ILIKE :q OR customer_email ILIKE :q", q: q)
+    end
   end
 
   def show

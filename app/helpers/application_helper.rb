@@ -26,35 +26,35 @@ module ApplicationHelper
 
   def sla_badge_classes(ticket)
     if ticket.status == "solved"
-      "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+      "bg-emerald-950/60 text-emerald-400 border border-emerald-800/50 font-medium"
     elsif ticket.sla_breached?
-      "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/30 font-semibold"
+      "bg-red-950/60 text-red-400 border border-red-800/50 font-semibold"
     elsif ticket.sla_deadline.present? && (ticket.sla_deadline - Time.current) <= 1.hour
-      "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/25 font-medium"
+      "bg-amber-950/60 text-amber-400 border border-amber-800/50 font-medium"
     else
-      "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-500/20"
+      "bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-medium"
     end
   end
 
   def status_badge_classes(status)
     case status
     when "new"
-      "bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-600/20"
+      "bg-cyan-950/60 text-cyan-400 border border-cyan-800/50"
     when "open"
-      "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20"
+      "bg-amber-950/60 text-amber-400 border border-amber-800/50"
     when "solved"
-      "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+      "bg-emerald-950/60 text-emerald-400 border border-emerald-800/50"
     else
-      "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-500/20"
+      "bg-zinc-800 text-zinc-300 border border-zinc-700"
     end
   end
 
   def status_dot_classes(status)
     case status
-    when "new" then "bg-sky-500"
-    when "open" then "bg-amber-500"
-    when "solved" then "bg-emerald-500"
-    else "bg-slate-400"
+    when "new" then "bg-cyan-400"
+    when "open" then "bg-amber-400"
+    when "solved" then "bg-emerald-400"
+    else "bg-zinc-400"
     end
   end
 
@@ -70,25 +70,25 @@ module ApplicationHelper
   def priority_badge_classes(priority)
     case priority
     when "urgent"
-      "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/25 font-semibold"
+      "bg-red-950/60 text-red-400 border border-red-800/50 font-semibold"
     when "high"
-      "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-600/25 font-semibold"
+      "bg-orange-950/60 text-orange-400 border border-orange-800/50 font-semibold"
     when "medium", "normal"
-      "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/20 font-medium"
+      "bg-sky-950/60 text-sky-400 border border-sky-800/50 font-medium"
     when "low"
-      "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-500/20 font-medium"
+      "bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-medium"
     else
-      "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-500/20"
+      "bg-zinc-800 text-zinc-300 border border-zinc-700"
     end
   end
 
   def priority_dot_classes(priority)
     case priority
-    when "urgent" then "bg-red-500"
-    when "high" then "bg-orange-500"
-    when "medium", "normal" then "bg-indigo-500"
-    when "low" then "bg-slate-400"
-    else "bg-slate-400"
+    when "urgent" then "bg-red-400 animate-pulse"
+    when "high" then "bg-orange-400"
+    when "medium", "normal" then "bg-sky-400"
+    when "low" then "bg-zinc-400"
+    else "bg-zinc-400"
     end
   end
 
