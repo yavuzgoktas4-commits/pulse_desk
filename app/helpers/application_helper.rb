@@ -48,7 +48,9 @@ module ApplicationHelper
     case priority
     when "urgent"
       "bg-rose-100 text-rose-800 ring-1 ring-inset ring-rose-600/30 font-semibold"
-    when "normal"
+    when "high"
+      "bg-orange-100 text-orange-800 ring-1 ring-inset ring-orange-600/30 font-semibold"
+    when "medium", "normal"
       "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/20"
     when "low"
       "bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-500/20"
@@ -60,6 +62,8 @@ module ApplicationHelper
   def priority_label(priority)
     case priority
     when "urgent" then "Acil (Urgent)"
+    when "high" then "Yüksek (High)"
+    when "medium" then "Orta (Medium)"
     when "normal" then "Normal"
     when "low" then "Düşük (Low)"
     else priority.to_s.titleize

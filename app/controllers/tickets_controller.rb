@@ -2,6 +2,8 @@ class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show mark_as_open mark_as_solved]
 
   def index
+    Rails.application.load_seed if !Rails.env.test? && Ticket.count.zero?
+
     @tickets = Ticket.order(created_at: :desc)
     @tickets = @tickets.where(status: params[:status]) if params[:status].present? && Ticket::STATUSES.include?(params[:status])
     @tickets = @tickets.where(priority: params[:priority]) if params[:priority].present? && Ticket::PRIORITIES.include?(params[:priority])

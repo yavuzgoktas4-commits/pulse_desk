@@ -1,6 +1,6 @@
 class Ticket < ApplicationRecord
   STATUSES = %w[new open solved].freeze
-  PRIORITIES = %w[low normal urgent].freeze
+  PRIORITIES = %w[low normal medium high urgent].freeze
   URGENT_KEYWORDS = %w[çöktü acil ödeme hata down critical].freeze
 
   before_validation :set_initial_rules, on: :create
