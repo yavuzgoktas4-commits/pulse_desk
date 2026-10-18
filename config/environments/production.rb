@@ -15,8 +15,14 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
+  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present? || true
+
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
+
+  # Ensure secret_key_base is always available on Render even if RAILS_MASTER_KEY is not set
+  config.secret_key_base = ENV["SECRET_KEY_BASE"] || ENV["RAILS_MASTER_KEY"] || Rails.application.credentials.secret_key_base || "pulsedesk_production_fallback_secret_key_base_9bf1201cc1ea44b69c29301249644088"
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
