@@ -19,6 +19,10 @@ gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# Environment variable management (.env) and Telegram Bot integration
+gem "dotenv-rails"
+gem "telegram-bot-ruby", "~> 2.0"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

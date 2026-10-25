@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_150624) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_160500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,8 +24,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_150624) do
     t.datetime "resolved_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "telegram_chat_id"
+    t.string "category"
+    t.text "summary"
+    t.index ["category"], name: "index_tickets_on_category"
     t.index ["priority"], name: "index_tickets_on_priority"
     t.index ["sla_deadline"], name: "index_tickets_on_sla_deadline"
     t.index ["status"], name: "index_tickets_on_status"
+    t.index ["telegram_chat_id"], name: "index_tickets_on_telegram_chat_id"
   end
 end

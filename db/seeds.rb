@@ -1,4 +1,4 @@
-# PulseDesk — Gerçekçi B2B SaaS Destek Biletleri (Seed Verisi)
+# AbisiDesk — Gerçekçi B2B SaaS Destek Biletleri (Seed Verisi)
 # Her durum (new, open, solved), her öncelik (low, medium, high, urgent) ve
 # her SLA durumunu (süresi geçmiş ihlal, kritik son 1 saat, normal ve çözülmüş) temsil eden 6 kayıt.
 
@@ -85,4 +85,4 @@ seeds.each do |attrs|
   )
 end
 
-puts "PulseDesk Seed tamamlandı: #{Ticket.count} B2B SaaS destek bileti hazır."
+puts "AbisiDesk Seed tamamlandı: #{Ticket.count} B2B SaaS destek bileti hazır."

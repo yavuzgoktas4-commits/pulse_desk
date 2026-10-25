@@ -1,4 +1,4 @@
-<% content_for :title, "PulseDesk — Bilet Yönetim Sistemi" %>
+<% content_for :title, "AbisiDesk — Bilet Yönetim Sistemi" %>
 
 <% all_tickets = Ticket.all.to_a %>
 <% total_count = all_tickets.size %>
@@ -15,9 +15,9 @@
         <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
         Otomatik SLA & Akıllı Triyaj Aktif
       </div>
-      <h1 class="text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">Destek Biletleri</h1>
+      <h1 class="text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">AbisiDesk Destek Biletleri</h1>
       <p class="mt-1 text-sm text-zinc-400">
-        Gelen kurumsal talepleri gerçek zamanlı SLA hedefleri ve aciliyet önceliklerine göre izleyin.
+        AbisiDesk Destek Sistemine gelen kurumsal talepleri gerçek zamanlı SLA hedefleri ve aciliyet önceliklerine göre izleyin.
       </p>
     </div>
 
@@ -143,6 +143,16 @@
                     <div class="min-w-0 flex-1">
                       <div class="flex flex-wrap items-center gap-2.5">
                         <%= link_to ticket.title, ticket_path(ticket), class: "text-sm font-semibold text-zinc-100 group-hover:text-cyan-400 transition" %>
+                        <% if ticket.category.present? %>
+                          <span class="inline-flex items-center rounded-md border border-cyan-800/50 bg-cyan-950/60 px-2 py-0.5 text-[11px] font-medium text-cyan-300">
+                            <%= ticket.category %>
+                          </span>
+                        <% end %>
+                        <% if ticket.telegram_chat_id.present? %>
+                          <span class="inline-flex items-center gap-1 rounded-md border border-sky-800/50 bg-sky-950/60 px-2 py-0.5 text-[11px] font-medium text-sky-300">
+                            🤖 Telegram AI
+                          </span>
+                        <% end %>
                         <% if breached %>
                           <span class="inline-flex items-center gap-1.5 rounded-full border border-red-800/60 bg-red-950/80 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-red-400">
                             <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping"></span>
@@ -150,6 +160,9 @@
                           </span>
                         <% end %>
                       </div>
+                      <% if ticket.summary.present? %>
+                        <p class="mt-1 text-xs text-zinc-300/90 line-clamp-1"><%= ticket.summary %></p>
+                      <% end %>
                       <div class="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
                         <span class="font-medium text-zinc-300"><%= ticket.customer_email %></span>
                         <span class="text-zinc-600">&bull;</span>
@@ -225,7 +238,7 @@
   <div id="sla-rules" class="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 backdrop-blur">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h2 class="text-sm font-bold uppercase tracking-wider text-cyan-400">PulseDesk Otomatik SLA Motoru Kuralları</h2>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-cyan-400">AbisiDesk Otomatik SLA Motoru Kuralları</h2>
         <p class="mt-1 text-xs text-zinc-400">
           Bilet oluşturulurken başlık ve açıklama metni gerçek zamanlı taranarak aşağıdaki SLA politikaları otomatik uygulanır:
         </p>

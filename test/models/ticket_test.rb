@@ -76,4 +76,27 @@ class TicketTest < ActiveSupport::TestCase
       assert_not ticket.sla_breached?
     end
   end
+
+  test "Telegram ve Groq LLM verisiyle ticket kaydedilmeli ve durum bildirim fonksiyonu çalışmalı" do
+    ticket = Ticket.create_from_telegram!(
+      telegram_chat_id: "123456789",
+      subject: "Karttan çift çekim yapıldı",
+      category: "Ödeme",
+      priority: "Critical",
+      summary: "Kullanıcı kartından mükerrer tahsilat yapıldığını bildirdi."
+    )
+
+    assert_equal "Open", ticket.status
+    assert_equal "Critical", ticket.priority
+    assert_equal "Ödeme", ticket.category
+    assert_equal "123456789", ticket.telegram_chat_id
+    assert_equal "Karttan çift çekim yapıldı", ticket.subject
+
+    ticket.update_status!("In Progress")
+    assert_equal "In Progress", ticket.reload.status
+
+    ticket.update_status!("Resolved")
+    assert_equal "Resolved", ticket.reload.status
+    assert_not_nil ticket.resolved_at
+  end
 end

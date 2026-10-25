@@ -1,4 +1,4 @@
-name: PulseDesk CI
+name: AbisiDesk CI
 
 on:
   push:

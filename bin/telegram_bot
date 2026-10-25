@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+$stdout.sync = true
+$stderr.sync = true
+require_relative "../config/environment"
+
+if ARGV.include?("--simulate")
+  sample_text = ARGV.reject { |a| a == "--simulate" }.join(" ").presence ||
+                "Merhaba, kurumsal kredi kartımızdan 2 kez çekim yapıldı ama aboneliğimiz hâlâ aktif görünmüyor, acil kontrol edebilir misiniz?"
+  puts "=== AbisiDesk Telegram + Groq LLM Simülasyonu ==="
+  puts "1. [/start Testi]:"
+  puts "   Bot Yanıtı: #{TelegramBotService::WELCOME_MESSAGE}"
+  puts "\n2. [Serbest Metin Analizi & Bilet Oluşturma]:"
+  puts "   Kullanıcı Mesajı: #{sample_text}"
+
+  if ENV["GROQ_API_KEY"].present? && ENV["GROQ_API_KEY"] != "your_groq_api_key_here"
+    extracted = GroqExtractorService.extract(sample_text)
+    puts "   Groq LLM Çıktısı (JSON): #{JSON.pretty_generate(extracted)}"
+  else
+    puts "   [Bilgi] GROQ_API_KEY henüz girilmediği için örnek LLM JSON çıktısı simüle ediliyor..."
+    extracted = {
+      "subject" => "Mükerrer Kredi Kartı Çekimi ve Abonelik Aktivasyon Sorunu",
+      "category" => "Ödeme",
+      "priority" => "Critical",
+      "summary" => "Müşterinin kurumsal kartından çift çekim yapılmasına rağmen abonelik aktifleşmemiş."
+    }
+    puts "   Simüle Edilen LLM Çıktısı (JSON): #{JSON.pretty_generate(extracted)}"
+  end
+
+  ticket = Ticket.create_from_telegram!(
+    telegram_chat_id: "987654321",
+    subject: extracted["subject"],
+    category: extracted["category"],
+    priority: extracted["priority"],
+    summary: extracted["summary"],
+    description: sample_text
+  )
+
+  puts "\n3. [Kullanıcıya Gönderilen Telegram Yanıtı]:"
+  puts "   ✅ Talebiniz Alındı!"
+  puts "   📌 Takip No: ##{ticket.id}"
+  puts "   📝 Başlık: #{ticket.subject}"
+  puts "   ⚡ Öncelik: #{ticket.priority}"
+  puts "   Durum değiştikçe buradan anlık bildirim alacaksınız."
+  puts "   — AbisiDesk Bildirimi"
+
+  puts "\n4. [Çift Yönlü Durum Güncelleme Bildirimi Testi (send_status_update)]:"
+  ticket.update_status!("In Progress")
+  puts "   Bilet ##{ticket.id} durumu '#{ticket.status}' olarak güncellendi ve send_status_update(#{ticket.id}, '#{ticket.status}') tetiklendi."
+else
+  TelegramBotService.run_polling
+end

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="tr" class="h-full dark">
   <head>
-    <title><%= content_for(:title) || "PulseDesk — Bilet Yönetim Sistemi" %></title>
+    <title><%= content_for(:title) || "AbisiDesk — Bilet Yönetim Sistemi" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="PulseDesk">
+    <meta name="application-name" content="AbisiDesk">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -38,7 +38,7 @@
               </span>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-base font-bold tracking-tight text-zinc-100">PulseDesk</span>
+                  <span class="text-base font-bold tracking-tight text-zinc-100">AbisiDesk</span>
                   <span class="rounded border border-cyan-800/60 bg-cyan-950/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-cyan-400">v2.4</span>
                 </div>
                 <p class="text-[11px] text-zinc-500">B2B SLA & Triage Engine</p>
@@ -149,13 +149,13 @@
             <div class="flex items-center gap-3">
               <!-- Mobil Logo -->
               <%= link_to root_path, class: "flex items-center gap-2 lg:hidden" do %>
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500 text-zinc-950 font-bold">P</span>
-                <span class="text-base font-bold text-zinc-100">PulseDesk</span>
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500 text-zinc-950 font-bold">A</span>
+                <span class="text-base font-bold text-zinc-100">AbisiDesk</span>
               <% end %>
 
               <div class="hidden sm:block">
                 <div class="flex items-center gap-2 text-xs font-medium text-zinc-400">
-                  <span>PulseDesk Cloud</span>
+                  <span>AbisiDesk Cloud</span>
                   <span class="text-zinc-700">/</span>
                   <span class="text-zinc-200 font-semibold">Destek Operasyon Merkezi</span>
                 </div>
@@ -205,9 +205,17 @@
         </div>
 
         <!-- Sayfa İçeriği -->
-        <main class="mx-auto w-full max-w-7xl flex-1 px-4 pb-16 sm:px-6 lg:px-8">
+        <main class="mx-auto w-full max-w-7xl flex-1 px-4 pb-12 sm:px-6 lg:px-8">
           <%= yield %>
         </main>
+
+        <!-- Alt Bilgi (Footer) -->
+        <footer class="border-t border-zinc-800/80 bg-zinc-950/80 px-4 py-4 sm:px-6 lg:px-8">
+          <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 text-xs text-zinc-500 sm:flex-row">
+            <span>&copy; <%= Time.current.year %> <strong class="font-semibold text-zinc-300">AbisiDesk</strong> — Kurumsal SLA & Yapay Zeka Destek Sistemi</span>
+            <span>Telegram AI Bot: <strong class="font-mono text-cyan-400">@Abisinin_Destek_Bot</strong></span>
+          </div>
+        </footer>
       </div>
     </div>
   </body>

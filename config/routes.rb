@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   root "tickets#index"
 
+  post "telegram/webhook", to: "telegram_webhooks#receive"
+
   resources :tickets, only: %i[index show new create] do
     member do
       patch :mark_as_open
